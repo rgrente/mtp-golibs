@@ -2,6 +2,8 @@ package grpc
 
 import (
 	"crypto/tls"
+	"crypto/x509"
+	"fmt"
 	"log"
 	"os"
 
@@ -29,16 +31,27 @@ func SetGRPCClientOptions() ([]grpc.DialOption, error) {
 
 func SetGRPCServerOptions() ([]grpc.ServerOption, error) {
 
-	// Load certs
+	// Load server key pair
 	cert, err := tls.LoadX509KeyPair(os.Getenv("SERVER_CRT_LOCATION"), os.Getenv("SERVER_KEY_LOCATION"))
 	if err != nil {
 		return nil, err
+	}
+
+	// Load CA cert (to check client cert)
+	caCert, err := os.ReadFile(os.Getenv("CA_CRT_LOCATION"))
+	if err != nil {
+		return nil, err
+	}
+	certPool := x509.NewCertPool()
+	if !certPool.AppendCertsFromPEM(caCert) {
+		return nil, fmt.Errorf("failed to add CA's certificate")
 	}
 
 	// Create the credentials and return it
 	config := &tls.Config{
 		Certificates: []tls.Certificate{cert},
 		ClientAuth:   tls.RequireAndVerifyClientCert,
+		ClientCAs:    certPool,
 	}
 
 	// set TLS option
