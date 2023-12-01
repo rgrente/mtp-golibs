@@ -5,8 +5,47 @@ import (
 )
 
 func TestSetGRPCClientOptions(t *testing.T) {
-	t.Setenv("CA_CRT_LOCATION", "../tests/ca.crt")
+
+	// no en vars
 	_, err := SetGRPCClientOptions()
+	if err.Error() != "CA_CRT_LOCATION env var must be set" {
+		t.Errorf(err.Error())
+	}
+
+	// ca wrong env var path
+	t.Setenv("CA_CRT_LOCATION", "../tests/c.crt")
+	_, err = SetGRPCClientOptions()
+	if err.Error() != "open ../tests/c.crt: no such file or directory" {
+		t.Errorf(err.Error())
+	}
+
+	// ca env ok
+	t.Setenv("CA_CRT_LOCATION", "../tests/ca.crt")
+	_, err = SetGRPCClientOptions()
+	if err != nil {
+		t.Errorf(err.Error())
+	}
+
+	// wrong client crt env var path
+	t.Setenv("CLIENT_CRT_LOCATION", "../tests/tl.crt")
+	t.Setenv("CLIENT_KEY_LOCATION", "../tests/tls.key")
+	_, err = SetGRPCClientOptions()
+	if err.Error() != "open ../tests/tl.crt: no such file or directory" {
+		t.Errorf(err.Error())
+	}
+
+	// mismatch client crt & key
+	t.Setenv("CLIENT_CRT_LOCATION", "../tests/ca.crt")
+	t.Setenv("CLIENT_KEY_LOCATION", "../tests/tls.key")
+	_, err = SetGRPCClientOptions()
+	if err.Error() != "tls: private key does not match public key" {
+		t.Errorf(err.Error())
+	}
+
+	// client crt & key env vars ok
+	t.Setenv("CLIENT_CRT_LOCATION", "../tests/tls.crt")
+	t.Setenv("CLIENT_KEY_LOCATION", "../tests/tls.key")
+	_, err = SetGRPCClientOptions()
 	if err != nil {
 		t.Errorf(err.Error())
 	}
