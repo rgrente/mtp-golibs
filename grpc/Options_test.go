@@ -11,8 +11,8 @@ func TestSetGRPCClientOptions(t *testing.T) {
 }
 
 func TestSetGRPCServerOptions(t *testing.T) {
-	t.Setenv("CLIENT_RS_SERVER_CRT_LOCATION", "../tests/tls.crt")
-	t.Setenv("CLIENT_RS_SERVER_KEY_LOCATION", "../tests/tls.key")
+	t.Setenv("SERVER_CRT_LOCATION", "../tests/tls.crt")
+	t.Setenv("SERVER_KEY_LOCATION", "../tests/tls.key")
 	_, err := SetGRPCServerOptions()
 	if err != nil {
 		t.Errorf(err.Error())

@@ -30,7 +30,7 @@ func SetGRPCClientOptions() ([]grpc.DialOption, error) {
 func SetGRPCServerOptions() ([]grpc.ServerOption, error) {
 
 	// Load certs
-	cert, err := tls.LoadX509KeyPair(os.Getenv("CLIENT_RS_SERVER_CRT_LOCATION"), os.Getenv("CLIENT_RS_SERVER_KEY_LOCATION"))
+	cert, err := tls.LoadX509KeyPair(os.Getenv("SERVER_CRT_LOCATION"), os.Getenv("SERVER_KEY_LOCATION"))
 	if err != nil {
 		return nil, err
 	}
