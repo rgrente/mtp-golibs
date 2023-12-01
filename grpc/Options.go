@@ -38,7 +38,7 @@ func SetGRPCServerOptions() ([]grpc.ServerOption, error) {
 	// Create the credentials and return it
 	config := &tls.Config{
 		Certificates: []tls.Certificate{cert},
-		ClientAuth:   tls.NoClientCert,
+		ClientAuth:   tls.RequireAndVerifyClientCert,
 	}
 
 	// set TLS option
