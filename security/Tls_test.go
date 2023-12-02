@@ -4,9 +4,9 @@ import (
 	"testing"
 )
 
-func TestLoadTLSCredentials(t *testing.T) {
+func TestSetCACertPool(t *testing.T) {
 	t.Setenv("CA_CRT_LOCATION", "../tests/ca.crt")
-	_, err := LoadTLSCredentials()
+	_, err := SetCACertPool()
 	if err != nil {
 		t.Errorf(err.Error())
 	}
