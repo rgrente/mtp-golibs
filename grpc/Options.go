@@ -40,6 +40,8 @@ func SetGRPCClientOptions() ([]grpc.DialOption, error) {
 			return nil, err
 		}
 		config.Certificates = []tls.Certificate{clientCert}
+	} else if os.Getenv("CLIENT_CRT_LOCATION") != "" || os.Getenv("CLIENT_KEY_LOCATION") != "" {
+		return nil, errors.New("CLIENT_CRT_LOCATION and CLIENT_KEY_LOCATION must both be set to send client cert for outbound connections")
 	}
 
 	// append opts with TLS config credential
@@ -71,12 +73,12 @@ func SetGRPCServerOptions(disableClientAuth bool) ([]grpc.ServerOption, error) {
 	if !disableClientAuth {
 
 		// check if CA_CRT_LOCATION env var is set
-		if os.Getenv("CA_CRT_LOCATION") == "" {
-			return nil, errors.New("CA_CRT_LOCATION env var must be set when client auth is enabled")
+		if os.Getenv("TLS_CLIENT_AUTH_CA_CRT_LOCATION") == "" {
+			return nil, errors.New("TLS_CLIENT_AUTH_CA_CRT_LOCATION env var must be set when client auth is enabled")
 		}
 
 		// Load CA cert (to check client cert)
-		caCert, err := os.ReadFile(os.Getenv("CA_CRT_LOCATION"))
+		caCert, err := os.ReadFile(os.Getenv("TLS_CLIENT_AUTH_CA_CRT_LOCATION"))
 		if err != nil {
 			return nil, err
 		}
