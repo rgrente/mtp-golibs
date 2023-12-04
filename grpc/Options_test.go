@@ -26,6 +26,13 @@ func TestSetGRPCClientOptions(t *testing.T) {
 		t.Errorf(err.Error())
 	}
 
+	// one of client crt or client key set env var path
+	t.Setenv("CLIENT_KEY_LOCATION", "../tests/tls.crt")
+	_, err = SetGRPCClientOptions()
+	if err.Error() != "CLIENT_CRT_LOCATION and CLIENT_KEY_LOCATION must both be set to send client cert for outbound connections" {
+		t.Errorf(err.Error())
+	}
+
 	// wrong client crt env var path
 	t.Setenv("CLIENT_CRT_LOCATION", "../tests/tl.crt")
 	t.Setenv("CLIENT_KEY_LOCATION", "../tests/tls.key")
@@ -89,11 +96,11 @@ func TestSetGRPCServerOptions(t *testing.T) {
 
 	// server env vars + enable client auth
 	_, err = SetGRPCServerOptions(false)
-	if err.Error() != "CA_CRT_LOCATION env var must be set when client auth is enabled" {
+	if err.Error() != "TLS_CLIENT_AUTH_CA_CRT_LOCATION env var must be set when client auth is enabled" {
 		t.Errorf(err.Error())
 	}
 
-	t.Setenv("CA_CRT_LOCATION", "../tests/c.crt")
+	t.Setenv("TLS_CLIENT_AUTH_CA_CRT_LOCATION", "../tests/c.crt")
 	// all env vars + disable client auth
 	_, err = SetGRPCServerOptions(true)
 	if err != nil {
@@ -106,7 +113,7 @@ func TestSetGRPCServerOptions(t *testing.T) {
 		t.Errorf(err.Error())
 	}
 
-	t.Setenv("CA_CRT_LOCATION", "../tests/ca.crt")
+	t.Setenv("TLS_CLIENT_AUTH_CA_CRT_LOCATION", "../tests/ca.crt")
 	// all env vars + disable client auth
 	_, err = SetGRPCServerOptions(true)
 	if err != nil {
