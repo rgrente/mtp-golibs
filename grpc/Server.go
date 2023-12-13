@@ -6,7 +6,7 @@ import (
 	"google.golang.org/grpc"
 )
 
-func InitGRPCServer(listenPort int) (*grpc.Server, error) {
+func InitGRPCServer() (*grpc.Server, error) {
 
 	// set GRPC options
 	var opts []grpc.ServerOption
