@@ -14,20 +14,20 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 )
 
+// SetGRPCClientOptions configures gRPC client options based on the specified parameters.
 func SetGRPCClientOptions(insecureClient bool) ([]grpc.DialOption, error) {
-
 	var opts []grpc.DialOption
 
 	if insecureClient {
-		// insecure client
+		// Insecure client (without TLS)
 		opts = append(opts, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	} else {
-		// check if SERVER_CRT_LOCATION & SERVER_KEY_LOCATION env vars are set
+		// Check if CA_CRT_LOCATION env var is set
 		if os.Getenv("CA_CRT_LOCATION") == "" {
 			return nil, errors.New("CA_CRT_LOCATION env var must be set")
 		}
 
-		// load TLS credentials (CA)
+		// Load TLS credentials (CA)
 		CACertPool, err := security.SetCACertPool()
 		if err != nil {
 			return nil, err
@@ -49,20 +49,19 @@ func SetGRPCClientOptions(insecureClient bool) ([]grpc.DialOption, error) {
 			return nil, errors.New("CLIENT_CRT_LOCATION and CLIENT_KEY_LOCATION must both be set to send client cert for outbound connections")
 		}
 
-		// append opts with TLS config credential
+		// Append opts with TLS config credential
 		opts = append(opts, grpc.WithTransportCredentials(credentials.NewTLS(config)))
 	}
 
 	return opts, nil
-
 }
 
+// SetGRPCServerOptions configures gRPC server options based on the specified parameters.
 func SetGRPCServerOptions(disableClientAuth bool, insecureServer bool) ([]grpc.ServerOption, error) {
-
 	var opts []grpc.ServerOption
 
 	if !insecureServer {
-		// check if SERVER_CRT_LOCATION & SERVER_KEY_LOCATION env vars are set
+		// Check if SERVER_CRT_LOCATION & SERVER_KEY_LOCATION env vars are set
 		if os.Getenv("SERVER_CRT_LOCATION") == "" || os.Getenv("SERVER_KEY_LOCATION") == "" {
 			return nil, errors.New("SERVER_CRT_LOCATION & SERVER_KEY_LOCATION env vars must be set")
 		}
@@ -78,10 +77,9 @@ func SetGRPCServerOptions(disableClientAuth bool, insecureServer bool) ([]grpc.S
 			Certificates: []tls.Certificate{serverCert},
 		}
 
-		// if client auth enabled
+		// If client auth enabled
 		if !disableClientAuth {
-
-			// check if CA_CRT_LOCATION env var is set
+			// Check if TLS_CLIENT_AUTH_CA_CRT_LOCATION env var is set
 			if os.Getenv("TLS_CLIENT_AUTH_CA_CRT_LOCATION") == "" {
 				return nil, errors.New("TLS_CLIENT_AUTH_CA_CRT_LOCATION env var must be set when client auth is enabled")
 			}
@@ -104,5 +102,4 @@ func SetGRPCServerOptions(disableClientAuth bool, insecureServer bool) ([]grpc.S
 	}
 
 	return opts, nil
-
 }
