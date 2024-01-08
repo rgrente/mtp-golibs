@@ -1,4 +1,4 @@
-package motelgin
+package otelgin
 
 import (
 	"context"
@@ -38,7 +38,7 @@ func initTracer(serviceName string, collectorURL string, insecure string) func(c
 		),
 	)
 	if err != nil {
-		log.Printf("Could not set resources: ", err)
+		log.Println("Could not set resources: ", err)
 	}
 
 	otel.SetTracerProvider(
