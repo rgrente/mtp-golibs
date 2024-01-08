@@ -1,4 +1,4 @@
-package otelgrpc
+package grpc
 
 import (
 	"context"

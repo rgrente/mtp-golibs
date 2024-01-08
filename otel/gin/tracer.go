@@ -1,4 +1,4 @@
-package otelgin
+package gin
 
 import (
 	"context"
