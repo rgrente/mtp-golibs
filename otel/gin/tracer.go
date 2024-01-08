@@ -3,7 +3,6 @@ package motelgin
 import (
 	"context"
 	"log"
-	"os"
 
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
@@ -14,13 +13,7 @@ import (
 	"google.golang.org/grpc/credentials"
 )
 
-var (
-	serviceName  = "frontend"
-	collectorURL = os.Getenv("OTEL_EXPORTER_OTLP_ENDPOINT") // address of OTLP exporter endpoint -> Grafana, jaeger etc...
-	insecure     = os.Getenv("INSECURE_MODE")               // GRPC communcation security -> to confirm if it's between API and exporter or other
-)
-
-func initTracer() func(context.Context) error {
+func initTracer(serviceName string, collectorURL string, insecure string) func(context.Context) error {
 	secureOption := otlptracegrpc.WithTLSCredentials(credentials.NewClientTLSFromCert(nil, ""))
 	if len(insecure) > 0 {
 		secureOption = otlptracegrpc.WithInsecure()
