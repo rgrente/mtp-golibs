@@ -13,7 +13,7 @@ import (
 	"google.golang.org/grpc/credentials"
 )
 
-func initTracer(serviceName string, collectorURL string, insecure string) func(context.Context) error {
+func InitTracer(serviceName string, collectorURL string, insecure string) func(context.Context) error {
 	secureOption := otlptracegrpc.WithTLSCredentials(credentials.NewClientTLSFromCert(nil, ""))
 	if len(insecure) > 0 {
 		secureOption = otlptracegrpc.WithInsecure()
