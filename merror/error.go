@@ -8,17 +8,17 @@ import (
 )
 
 type MError struct {
-	code int
-	message string
-	description string
-	devCode int
-	devMessage string
-	devDescription string
-	trace string
+	Code int
+	Message string
+	Description string
+	DevCode int
+	DevMessage string
+	DevDescription string
+	Trace string
 }
 
 func (e *MError) Error() string {
-	return e.message
+	return e.Message
 }
 
 func (e *MError) New(message string) *MError {
@@ -26,36 +26,36 @@ func (e *MError) New(message string) *MError {
 	var callerOk bool
 	pc, file, line, callerOk := runtime.Caller(1)
 
-	err.code = 501
-	err.message = "Unknown error"
-	err.description = ""
-	err.devCode = 1000
-	err.devMessage = e.Error()
-	err.devDescription = ""
+	err.Code = 501
+	err.Message = "Unknown error"
+	err.Description = ""
+	err.DevCode = 1000
+	err.DevMessage = e.Error()
+	err.DevDescription = ""
 	if callerOk {
-		err.trace = file[strings.LastIndex(file, "/")+1:] +
+		err.Trace = file[strings.LastIndex(file, "/")+1:] +
 		":" + runtime.FuncForPC(pc).Name() +
 		":" + strconv.Itoa(line)
 	} else {
-		err.trace = ""
+		err.Trace = ""
 	}
 	return err
 }
 
-func processError(e error) error {
+func ProcessError(e error) error {
 	var err *MError
 	var callerOk bool
 	pc, file, line, callerOk := runtime.Caller(1)
 
 	switch {
 	case errors.As(e, &err):
-		if err.trace == "" {
-			err.trace = file[strings.LastIndex(file, "/")+1:] +
+		if err.Trace == "" {
+			err.Trace = file[strings.LastIndex(file, "/")+1:] +
 			":" + runtime.FuncForPC(pc).Name() +
 			":" + strconv.Itoa(line)
 		}
 		if callerOk {
-			err.trace = runtime.FuncForPC(pc).Name() + "/" + err.trace
+			err.Trace = runtime.FuncForPC(pc).Name() + "/" + err.Trace
 		}
 	default:
 		err = err.New(e.Error())
