@@ -20,7 +20,7 @@ type MultipassError struct {
 // Raise HTTP Fail with specified status
 // Send HTTP error message
 // Log Developer error message (with more detailed error)
-func renderError(c *gin.Context, err error) {
+func RenderError(c *gin.Context, err error) {
 	var mError *MError
 	HTTPError := MultipassError{}
 	colorYellow := "\u001b[33m"
@@ -50,7 +50,7 @@ func renderError(c *gin.Context, err error) {
 	}
 }
 
-func toMError(trailer metadata.MD) error {
+func ToMError(trailer metadata.MD) error {
 	code, err := strconv.Atoi(trailer["code"][0])
 	mError := &MError{}
 	if err != nil {

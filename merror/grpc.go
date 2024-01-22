@@ -14,7 +14,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func processGRPCError(ctx context.Context, e error) error {
+func ProcessGRPCError(ctx context.Context, e error) error {
 	var err *MError
 	var trailer metadata.MD
 	var trace string
