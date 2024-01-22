@@ -7,7 +7,6 @@ import (
 	"strings"
 )
 
-
 type MError struct {
 	code int
 	message string

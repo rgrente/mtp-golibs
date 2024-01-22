@@ -12,11 +12,10 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
-	me "github.com/rgrente/mtp-golibs/merror"
 )
 
 func processGRPCError(ctx context.Context, e error) error {
-	var err *me.MError
+	var err *MError
 	var trailer metadata.MD
 	var trace string
 	serviceName, ok := os.LookupEnv("SERVICE_NAME")

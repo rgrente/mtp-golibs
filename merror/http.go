@@ -9,7 +9,6 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"google.golang.org/grpc/metadata"
-	me "github.com/rgrente/mtp-golibs/merror"
 )
 
 type MultipassError struct {
@@ -22,7 +21,7 @@ type MultipassError struct {
 // Send HTTP error message
 // Log Developer error message (with more detailed error)
 func renderError(c *gin.Context, err error) {
-	var mError *me.MError
+	var mError *MError
 	HTTPError := MultipassError{}
 	colorYellow := "\u001b[33m"
 	colorNone := "\033[0m"
@@ -53,7 +52,7 @@ func renderError(c *gin.Context, err error) {
 
 func toMError(trailer metadata.MD) error {
 	code, err := strconv.Atoi(trailer["code"][0])
-	mError := &me.MError{}
+	mError := &MError{}
 	if err != nil {
 		mError.code = 422
 	} else {
