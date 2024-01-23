@@ -24,15 +24,15 @@ func ProcessGRPCError(ctx context.Context, e error) error {
 	switch {
 	case errors.As(e, &err):
 		if !ok {
-			if err.trace == "" && callerOk {
+			if err.Trace == "" && callerOk {
 				trace = file[strings.LastIndex(file, "/")+1:] +
 				":" + runtime.FuncForPC(pc).Name() +
 				":" + strconv.Itoa(line)
 			} else {
-				trace = err.trace
+				trace = err.Trace
 			}
 		} else {
-			trace = serviceName+"/"+err.trace
+			trace = serviceName+"/"+err.Trace
 		}
 	default:
 		err = err.New(e.Error())
@@ -43,15 +43,15 @@ func ProcessGRPCError(ctx context.Context, e error) error {
 		}
 	}
 	trailer = metadata.Pairs(
-		"code", strconv.Itoa(err.code),
-		"message", err.message,
-		"description", err.description,
+		"code", strconv.Itoa(err.Code),
+		"message", err.Message,
+		"description", err.Description,
 		"trace", trace,
-		"dev_code", strconv.Itoa(err.devCode),
-		"dev_message", err.devMessage,
-		"dev_description", err.devDescription,
+		"dev_code", strconv.Itoa(err.DevCode),
+		"dev_message", err.DevMessage,
+		"dev_description", err.DevDescription,
 	)
 
 	grpc.SetTrailer(ctx, trailer)
-	return status.Error(codes.Aborted, err.message)
+	return status.Error(codes.Aborted, err.Message)
 }

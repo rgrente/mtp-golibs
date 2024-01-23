@@ -29,19 +29,19 @@ func RenderError(c *gin.Context, err error) {
 	switch {
 	case errors.As(err, &mError):
 		// Raise HTTP status and render HTTP error
-		HTTPError.Code = mError.code
-		HTTPError.Message = mError.message
-		HTTPError.Description = mError.description
-		c.AbortWithStatus(mError.code)
+		HTTPError.Code = mError.Code
+		HTTPError.Message = mError.Message
+		HTTPError.Description = mError.Description
+		c.AbortWithStatus(mError.Code)
 		errorJSON, _ := json.Marshal(HTTPError)
-		c.Data(mError.code, "application/json", errorJSON)
+		c.Data(mError.Code, "application/json", errorJSON)
 
 		// Log error for developer
 		fmt.Println(string(colorYellow), "Developer Error:")
-		fmt.Println("Code: ", mError.devCode)
-		fmt.Println("Message: ", mError.devMessage)
-		fmt.Println("Description: ", mError.devDescription)
-		fmt.Println("Trace: ", mError.trace, string(colorNone))
+		fmt.Println("Code: ", mError.DevCode)
+		fmt.Println("Message: ", mError.DevMessage)
+		fmt.Println("Description: ", mError.DevDescription)
+		fmt.Println("Trace: ", mError.Trace, string(colorNone))
 	default:
 		c.AbortWithStatus(501)
 		HTTPError.Code = 501
@@ -54,22 +54,22 @@ func ToMError(trailer metadata.MD) error {
 	code, err := strconv.Atoi(trailer["code"][0])
 	mError := &MError{}
 	if err != nil {
-		mError.code = 422
+		mError.Code = 422
 	} else {
-		mError.code = code
+		mError.Code = code
 	}
 	devCode, err := strconv.Atoi(trailer["dev_code"][0])
 	if err != nil {
-		mError.devCode = 501
+		mError.DevCode = 501
 	} else {
-		mError.devCode = devCode
+		mError.DevCode = devCode
 	}
 
-	mError.message = trailer["message"][0]
-	mError.description = trailer["description"][0]
-	mError.trace = trailer["trace"][0]
-	mError.devMessage = trailer["dev_message"][0]
-	mError.devDescription = trailer["dev_description"][0]
+	mError.Message = trailer["message"][0]
+	mError.Description = trailer["description"][0]
+	mError.Trace = trailer["trace"][0]
+	mError.DevMessage = trailer["dev_message"][0]
+	mError.DevDescription = trailer["dev_description"][0]
 
 	return mError
 }
