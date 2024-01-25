@@ -5,6 +5,7 @@ import (
 	"strconv"
 	"errors"
 	"encoding/json"
+	"time"
 
 	"github.com/gin-gonic/gin"
 
@@ -29,15 +30,16 @@ func RenderError(c *gin.Context, err error) {
 	switch {
 	case errors.As(err, &mError):
 		// Raise HTTP status and render HTTP error
-		HTTPError.Code = mError.Code
+		HTTPError.Code = 422
 		HTTPError.Message = mError.Message
 		HTTPError.Description = mError.Description
-		c.AbortWithStatus(mError.Code)
+		c.AbortWithStatus(HTTPError.Code)
 		errorJSON, _ := json.Marshal(HTTPError)
 		c.Data(mError.Code, "application/json", errorJSON)
 
 		// Log error for developer
 		fmt.Println(string(colorYellow), "Developer Error:")
+		fmt.Println("Raised at: ", time.Now().String())
 		fmt.Println("Code: ", mError.DevCode)
 		fmt.Println("Message: ", mError.DevMessage)
 		fmt.Println("Description: ", mError.DevDescription)
