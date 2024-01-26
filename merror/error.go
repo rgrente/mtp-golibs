@@ -30,7 +30,7 @@ func (e *MError) New(message string) *MError {
 	err.Message = "Unknown error"
 	err.Description = ""
 	err.DevCode = 1000
-	err.DevMessage = e.Error()
+	err.DevMessage = ""
 	err.DevDescription = ""
 	if callerOk {
 		err.Trace = file[strings.LastIndex(file, "/")+1:] +
