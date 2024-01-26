@@ -22,7 +22,7 @@ func (e *MError) Error() string {
 }
 
 func (e *MError) New(message string) *MError {
-	var err *MError
+	var err = MError{}
 	var callerOk bool
 	pc, file, line, callerOk := runtime.Caller(1)
 
@@ -39,7 +39,7 @@ func (e *MError) New(message string) *MError {
 	} else {
 		err.Trace = ""
 	}
-	return err
+	return &err
 }
 
 func ProcessError(e error) error {
