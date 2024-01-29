@@ -58,28 +58,49 @@ func RenderError(c *gin.Context, err error) {
 
 // ToMError converts gRPC metadata trailer to a MultipassError.
 func ToMError(trailer metadata.MD) error {
-	code, err := strconv.Atoi(trailer["code"][0])
 	mError := &MError{}
-	if err != nil {
-		// If code conversion fails, set a default code.
-		mError.Code = 422
-	} else {
-		mError.Code = code
+	if code, ok := trailer["code"]; ok {
+		c, err := strconv.Atoi(code[0])
+		if err != nil {
+			// If code conversion fails, set a default code.
+			mError.Code = 422
+		} else {
+			mError.Code = c
+		}
 	}
-	devCode, err := strconv.Atoi(trailer["dev_code"][0])
-	if err != nil {
-		// If dev_code conversion fails, set a default dev_code.
-		mError.DevCode = 501
-	} else {
-		mError.DevCode = devCode
+	if message, ok := trailer["message"]; ok {
+		mError.Message = message[0]
 	}
-
-	// Populate MError fields from gRPC metadata.
-	mError.Message = trailer["message"][0]
-	mError.Description = trailer["description"][0]
-	mError.Trace = trailer["trace"][0]
-	mError.DevMessage = trailer["dev_message"][0]
-	mError.DevDescription = trailer["dev_description"][0]
+	if description, ok := trailer["description"]; ok {
+		mError.Description = description[0]
+	}
+	if trace, ok := trailer["trace"]; ok {
+		mError.Trace = trace[0]
+	}
+	if DevMessage, ok := trailer["dev_message"]; ok {
+		mError.DevMessage = DevMessage[0]
+	}
+	if DevDescription, ok := trailer["dev_description"]; ok {
+		mError.DevDescription = DevDescription[0]
+	}
+	if code, ok := trailer["code"]; ok {
+		c, err := strconv.Atoi(code[0])
+		if err != nil {
+			// If code conversion fails, set a default code.
+			mError.Code = 422
+		} else {
+			mError.Code = c
+		}
+	}
+	if devCode, ok := trailer["dev_code"]; ok {
+		c, err := strconv.Atoi(devCode[0])
+		if err != nil {
+			// If dev_code conversion fails, set a default dev_code.
+			mError.DevCode = 501
+		} else {
+			mError.DevCode = c
+		}
+	}
 
 	return mError
 }
