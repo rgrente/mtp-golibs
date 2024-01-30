@@ -36,7 +36,7 @@ func (e *MError) New(message string) *MError {
 	err.Description = ""
 	err.DevCode = 1000
 	err.DevMessage = ""
-	err.DevDescription = ""
+	err.DevDescription = message
 
 	// If runtime.Caller was successful, capture file, function, and line number in Trace.
 	if callerOk {
