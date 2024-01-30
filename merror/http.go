@@ -42,7 +42,7 @@ func RenderError(c *gin.Context, err error) {
 
 		// Log error for developer.
 		fmt.Println(string(colorYellow), "->Developer Error:")
-		fmt.Println("Raised at: ", time.Now().Format("2017-09-07 17:06:06"))
+		fmt.Println("Raised at: ", time.Now().String())
 		fmt.Println("Code: ", mError.DevCode)
 		fmt.Println("Message: ", mError.DevMessage)
 		fmt.Println("Description: ", mError.DevDescription)
