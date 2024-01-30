@@ -33,10 +33,10 @@ func RenderError(c *gin.Context, err error) {
 	switch {
 	case errors.As(err, &mError):
 		// If it is, set HTTP status and render HTTP error.
-		HTTPError.Code = 422
+		HTTPError.Code = mError.Code
 		HTTPError.Message = mError.Message
 		HTTPError.Description = mError.Description
-		c.AbortWithStatus(HTTPError.Code)
+		c.AbortWithStatus(422)
 		errorJSON, _ := json.Marshal(HTTPError)
 		c.Data(mError.Code, "application/json", errorJSON)
 
