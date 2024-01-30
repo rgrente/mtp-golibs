@@ -21,8 +21,8 @@ func TestProcessError(t *testing.T) {
 			t.Errorf("Output DevCode %d not equal to expected %d", merr.DevCode, 1000)
 		} else if merr.DevMessage != "" {
 			t.Errorf("Output DevMessage %s not equal to expected %s", merr.DevMessage, "")
-		} else if merr.DevDescription != "" {
-			t.Errorf("Output DevDescription %s not equal to expected %s", merr.DevDescription, "")
+		} else if merr.DevDescription != "test" {
+			t.Errorf("Output DevDescription %s not equal to expected %s", merr.DevDescription, "test")
 		}
 	} else {
 		t.Errorf("Returned error from Process error is not of type MError")
